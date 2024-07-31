@@ -172,11 +172,11 @@ func (o Object) DisplayString() string {
 	sb.WriteString(renderFieldValue("Protection", ""))
 	currentIndent += 1
 	sb.WriteString(renderIndent(currentIndent, renderFieldValue("Version History:", o.versionHistory)))
-	sb.WriteString(renderIndent(currentIndent, renderFieldHref("Retention Expiration Time", "")))
-	sb.WriteString(renderIndent(currentIndent+1, renderFieldHref("Object Retention retain until time:", o.objectRetainUntil)))
-	sb.WriteString(renderIndent(currentIndent+1, renderFieldHref("Bucket Retention retain until time:", o.bucketRetainUntil)))
-	sb.WriteString(renderIndent(currentIndent, renderFieldHref("Hold Status:", o.holdStatus)))
-	sb.WriteString(renderIndent(currentIndent, renderFieldHref("Encryption Type:", o.encryptionType)))
+	sb.WriteString(renderIndent(currentIndent, renderFieldValue("Retention Expiration Time", "")))
+	sb.WriteString(renderIndent(currentIndent+1, renderFieldValue("Object Retention retain until time:", o.objectRetainUntil)))
+	sb.WriteString(renderIndent(currentIndent+1, renderFieldValue("Bucket Retention retain until time:", o.bucketRetainUntil)))
+	sb.WriteString(renderIndent(currentIndent, renderFieldValue("Hold Status:", o.holdStatus)))
+	sb.WriteString(renderIndent(currentIndent, renderFieldValue("Encryption Type:", o.encryptionType)))
 	currentIndent -= 1
 
 	return sb.String()
@@ -374,6 +374,7 @@ func getBucket(bucketAttrs *storage.BucketAttrs) *Bucket {
 	var tags []string
 	var labels []string
 	var requesterPays = "OFF"
+	var encryption = "Google Managed"
 
 	if !bucketAttrs.UniformBucketLevelAccess.Enabled {
 		accessControl = "Fine Grained"
@@ -395,6 +396,10 @@ func getBucket(bucketAttrs *storage.BucketAttrs) *Bucket {
 		requesterPays = "ON"
 	}
 
+	if bucketAttrs.Encryption != nil {
+		encryption = bucketAttrs.Encryption.DefaultKMSKeyName
+	}
+
 	bucket := &Bucket{
 		name:                bucketAttrs.Name,
 		created:             bucketAttrs.Created.String(),
@@ -408,7 +413,7 @@ func getBucket(bucketAttrs *storage.BucketAttrs) *Bucket {
 		bucketRetention:     bucketRetention,
 		lifeCycleRules:      lifeCycleRules,
 		tags:                listToString(tags, ","),
-		encryption:          bucketAttrs.Encryption.DefaultKMSKeyName,
+		encryption:          encryption,
 		labels:              listToString(labels, ","),
 		requesterPays:       requesterPays,
 		replication:         bucketAttrs.RPO.String(),

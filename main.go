@@ -10,7 +10,7 @@ import (
 func main() {
 	err := gcs.Init("test")
 
-	if err != nil {
+	if err == nil {
 		display.Run()
 	} else {
 		log.Fatalln(err)
