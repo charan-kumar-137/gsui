@@ -81,13 +81,14 @@ func (m Model) GetCurrentPath() string {
 func (m *Model) UpdateCurrentPath(path string) {
 
 	var data = gcs.GetData(path)
+	// && data.GetError() != nil
 	if data != nil {
-
+		m.currentPath = path
 		m.table = getTable(data)
 	} else {
 		m.table = table.New()
 	}
-	m.currentPath = path
+
 	m.data = data
 
 }
@@ -113,12 +114,12 @@ func (m Model) getSelectedName() string {
 	if m.data.IsBucket {
 		var bucket = m.data.GetBucket(m.GetCursor())
 		if bucket != nil {
-			return bucket.Name
+			return bucket.GetName()
 		}
 	} else {
 		var object = m.data.GetObject(m.GetCursor())
 		if object != nil {
-			return object.Name
+			return object.GetName()
 		}
 	}
 

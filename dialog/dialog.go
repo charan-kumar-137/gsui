@@ -1,8 +1,6 @@
 package dialog
 
 import (
-	"fmt"
-
 	"github.com/charan-kumar-137/gsui/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -49,14 +47,14 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			if data.IsBucket {
 				var bucket = data.GetBucket(msg.GetCurrentCursor())
 				if bucket != nil {
-					m.text = fmt.Sprintf("Bucket(%s)", bucket.Name) + fmt.Sprint(bucket.Created, bucket.LoacationType, bucket.Location, bucket.DefaultStorageClass)
+					m.text = bucket.DisplayString()
 				} else {
 					m.text = "Not Found Bucket " + msg.GetPath()
 				}
 			} else {
 				var object = data.GetObject(msg.GetCurrentCursor())
 				if object != nil {
-					m.text = fmt.Sprintf("Object(%s)", object.Name) + fmt.Sprint(object.Size, object.Type, object.Created, object.LastModified, object.StorageClass)
+					m.text = object.DisplayString()
 				} else {
 					m.text = "Not Found Object " + msg.GetPath()
 				}
